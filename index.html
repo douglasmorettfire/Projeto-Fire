@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calculadora de Precificação – Balcão x iFood</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      padding: 20px;
+    }
+
+    .box {
+      max-width: 600px;
+      background: white;
+      padding: 26px;
+      margin: 40px auto;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 14px;
+      display: block;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      font-size: 16px;
+    }
+
+    button {
+      background: #111;
+      color: white;
+      border: none;
+      margin-top: 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 24px;
+      display: none;
+    }
+
+    .block {
+      background: #f3f3f3;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+
+    .highlight {
+      font-size: 26px;
+      font-weight: bold;
+      margin: 6px 0 12px;
+    }
+
+    .metrics div {
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .footer a {
+      text-decoration: none;
+      color: #111;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .ig-icon {
+      width: 18px;
+      height: 18px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+
+  <div style="text-align:center; margin-bottom:12px;">
+    <div style="font-size:28px; font-weight:bold;">Projeto Fire 🔥</div>
+    <div style="font-size:14px; color:#666;">Aumentando suas vendas e o seu lucro</div>
+  </div>
+
+  <h1>Calculadora de Precificação</h1>
+
+  <label>Custo do produto (R$)</label>
+  <input id="cost" type="number" step="0.01" placeholder="Ex: 10" />
+
+  <label>Plano no iFood</label>
+  <select id="plan">
+    <option value="0.15">Básico (15%)</option>
+    <option value="0.27">Com entregador (27%)</option>
+  </select>
+
+  <button onclick="calculate()">Calcular</button>
+
+  <div id="results" class="result">
+
+    <div class="block">
+      <strong>🏪 Preço sugerido no balcão</strong>
+      <div class="highlight" id="storePrice"></div>
+
+      <div class="metrics">
+        <div id="storeMarkup"></div>
+        <div id="storeCMV"></div>
+        <div id="storeProfit"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <strong>📱 Preço sugerido para venda no iFood</strong>
+      <div class="highlight" id="ifoodPrice"></div>
+
+      <div class="metrics">
+        <div id="ifoodMarkup"></div>
+        <div id="ifoodCMV"></div>
+        <div id="ifoodProfit"></div>
+        <div id="ifoodTax"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  <a href="https://www.instagram.com/douglasmorett" target="_blank">
+    <img
+      class="ig-icon"
+      src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"
+      alt="Instagram"
+    />
+    @douglasmorett
+  </a>
+  <div>Direitos autorais exclusivos</div>
+</div>
+
+<script>
+function roundPsychological(value) {
+  const endings = [4.9, 6.9, 9.9];
+  const base = Math.floor(value / 10) * 10;
+
+  let candidates = [];
+
+  for (let offset = -10; offset <= 10; offset += 10) {
+    endings.forEach(e => {
+      candidates.push(base + offset + e);
+    });
+  }
+
+  let closest = candidates[0];
+
+  candidates.forEach(c => {
+    if (c > 0 && Math.abs(c - value) < Math.abs(closest - value)) {
+      closest = c;
+    }
+  });
+
+  return Number(closest.toFixed(2));
+}
+
+function calculate() {
+  const cost = parseFloat(document.getElementById("cost").value);
+  const tax = parseFloat(document.getElementById("plan").value);
+
+  if (!cost || cost <= 0) {
+    alert("Informe um custo válido.");
+    return;
+  }
+
+  const rawStore = cost * 2.5;
+  const storePrice = roundPsychological(rawStore);
+  const storeProfit = storePrice - cost;
+  const storeMarkup = storePrice / cost;
+  const storeCMV = (cost / storePrice) * 100;
+
+  const rawIfood = storePrice / (1 - tax);
+  const ifoodPrice = roundPsychological(rawIfood);
+  const ifoodProfit = (ifoodPrice * (1 - tax)) - cost;
+  const ifoodMarkup = ifoodPrice / cost;
+  const ifoodCMV = (cost / ifoodPrice) * 100;
+
+  document.getElementById("storePrice").innerText =
+    "R$ " + storePrice.toFixed(2);
+
+  document.getElementById("storeMarkup").innerText =
+    "• Markup: " + storeMarkup.toFixed(2) + "x";
+
+  document.getElementById("storeCMV").innerText =
+    "• CMV: " + storeCMV.toFixed(1) + "%";
+
+  document.getElementById("storeProfit").innerText =
+    "• Lucro: R$ " + storeProfit.toFixed(2);
+
+  document.getElementById("ifoodPrice").innerText =
+    "R$ " + ifoodPrice.toFixed(2);
+
+  document.getElementById("ifoodMarkup").innerText =
+    "• Markup: " + ifoodMarkup.toFixed(2) + "x";
+
+  document.getElementById("ifoodCMV").innerText =
+    "• CMV: " + ifoodCMV.toFixed(1) + "%";
+
+  document.getElementById("ifoodProfit").innerText =
+    "• Lucro: R$ " + ifoodProfit.toFixed(2);
+
+  document.getElementById("ifoodTax").innerText =
+    "• Taxa iFood considerada: " + (tax * 100).toFixed(0) + "%";
+
+  document.getElementById("results").style.display = "block";
+}
+</script>
+
+</body>
+</html>
