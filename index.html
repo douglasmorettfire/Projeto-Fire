@@ -1,237 +1,271 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <title>Calculadora de Precificação – Balcão x iFood</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      padding: 20px;
-    }
-
-    .box {
-      max-width: 600px;
-      background: white;
-      padding: 26px;
-      margin: 40px auto;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.1);
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    label {
-      font-weight: bold;
-      margin-top: 14px;
-      display: block;
-    }
-
-    input, select, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      font-size: 16px;
-    }
-
-    button {
-      background: #111;
-      color: white;
-      border: none;
-      margin-top: 20px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .result {
-      margin-top: 24px;
-      display: none;
-    }
-
-    .block {
-      background: #f3f3f3;
-      padding: 16px;
-      border-radius: 10px;
-      margin-bottom: 16px;
-    }
-
-    .highlight {
-      font-size: 26px;
-      font-weight: bold;
-      margin: 6px 0 12px;
-    }
-
-    .metrics div {
-      font-size: 14px;
-      margin-top: 4px;
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 28px;
-      font-size: 14px;
-      color: #555;
-    }
-
-    .footer a {
-      text-decoration: none;
-      color: #111;
-      font-weight: bold;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
-    }
-
-    .ig-icon {
-      width: 18px;
-      height: 18px;
-    }
-  </style>
+<meta charset="UTF-8"/>
+<title>Projeto Fire - Calculadora de Precificação</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<style>
+body{font-family:Arial,sans-serif;background:#f7f7f7;padding:20px;}
+.box{max-width:800px;background:white;padding:26px;margin:40px auto;border-radius:12px;box-shadow:0 0 12px rgba(0,0,0,0.1);}
+h1,h2,h3{margin-top:10px}
+button{padding:10px 14px;border-radius:8px;border:none;background:#111;color:#fff;cursor:pointer;}
+button.secondary{background:#444}
+button:hover{opacity:.9}
+input,select{width:100%;padding:8px;margin:6px 0}
+.row{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px}
+.result{margin-top:20px;display:none}
+.block{background:#f3f3f3;padding:16px;border-radius:10px;margin-bottom:16px}
+hr{margin:20px 0}
+.tabbar{display:flex;gap:10px;margin-bottom:20px}
+.tabbar button{flex:1}
+.small{font-size:13px;color:#666}
+</style>
 </head>
-<body>
 
+<body>
 <div class="box">
 
-  <div style="text-align:center; margin-bottom:12px;">
-    <div style="font-size:28px; font-weight:bold;">Projeto Fire 🔥</div>
-    <div style="font-size:14px; color:#666;">Aumentando suas vendas e o seu lucro</div>
-  </div>
+<h1>Projeto Fire 🔥</h1>
 
-  <h1>Calculadora de Precificação</h1>
-
-  <label>Custo do produto (R$)</label>
-  <input id="cost" type="number" step="0.01" placeholder="Ex: 10" />
-
-  <label>Plano no iFood</label>
-  <select id="plan">
-    <option value="0.15">Básico (15%)</option>
-    <option value="0.27">Com entregador (27%)</option>
-  </select>
-
-  <button onclick="calculate()">Calcular</button>
-
-  <div id="results" class="result">
-
-    <div class="block">
-      <strong>🏪 Preço sugerido no balcão</strong>
-      <div class="highlight" id="storePrice"></div>
-
-      <div class="metrics">
-        <div id="storeMarkup"></div>
-        <div id="storeCMV"></div>
-        <div id="storeProfit"></div>
-      </div>
-    </div>
-
-    <div class="block">
-      <strong>📱 Preço sugerido para venda no iFood</strong>
-      <div class="highlight" id="ifoodPrice"></div>
-
-      <div class="metrics">
-        <div id="ifoodMarkup"></div>
-        <div id="ifoodCMV"></div>
-        <div id="ifoodProfit"></div>
-        <div id="ifoodTax"></div>
-      </div>
-    </div>
-
-  </div>
+<div class="tabbar">
+  <button onclick="showTab('basic')">Modo Iniciante</button>
+  <button onclick="showTab('advanced')">Modo Avançado</button>
 </div>
 
-<div class="footer">
-  <a href="https://www.instagram.com/douglasmorett" target="_blank">
-    <img
-      class="ig-icon"
-      src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"
-      alt="Instagram"
-    />
-    @douglasmorett
-  </a>
-  <div>Direitos autorais exclusivos</div>
+<!-- BASIC -->
+<div id="basicTab">
+<h2>Calculadora Iniciante</h2>
+
+<label>Custo do produto (R$)</label>
+<input id="basicCost" type="number" step="0.01"/>
+
+<label>Taxa do aplicativo (%)</label>
+<input id="basicAppFee" type="number" step="0.1"/>
+<div class="small">
+Dica: iFood plano básico com antecipação ≈ 16% • Plano com entregador ≈ 27%
+</div>
+
+<br>
+<button onclick="calculateBasic()">Calcular</button>
+
+<div id="basicResults" class="result">
+
+<div class="block">
+<strong>📍 Balcão</strong>
+<div id="basicStorePrice"></div>
+<div id="basicStoreMarkup"></div>
+<div id="basicStoreCMV"></div>
+<div id="basicStoreProfit"></div>
+</div>
+
+<div class="block">
+<strong>🚚 Aplicativos</strong>
+<div id="basicDeliveryPrice"></div>
+<div id="basicDeliveryMarkup"></div>
+<div id="basicDeliveryCMV"></div>
+<div id="basicDeliveryProfit"></div>
+</div>
+
+</div>
+</div>
+
+<!-- ADVANCED -->
+<div id="advancedTab" style="display:none;">
+
+<h2>Calculadora Avançada de Custos</h2>
+<p class="small">Aqui você enxerga seus números reais. Nenhum preço é sugerido.</p>
+
+<label>Preço de venda atual (R$)</label>
+<input id="advPrice" type="number" step="0.01"/>
+
+<hr/>
+
+<h3>🧾 Insumos</h3>
+<div id="ingredients">
+  <div class="row">
+    <input placeholder="Nome do insumo"/>
+    <input type="number" step="0.01" placeholder="Custo"/>
+  </div>
+</div>
+<button class="secondary" onclick="addIngredient()">+ Adicionar insumo</button>
+
+<hr/>
+
+<h3>📦 Embalagem</h3>
+<div id="packages">
+  <div class="row3">
+    <input placeholder="Nome da embalagem"/>
+    <input type="number" step="1" placeholder="Qtd usada"/>
+    <input type="number" step="0.01" placeholder="Valor unitário"/>
+  </div>
+</div>
+<button class="secondary" onclick="addPackage()">+ Adicionar embalagem</button>
+
+<hr/>
+
+<h3>💳 Taxas</h3>
+<label>Taxa de aplicativos de delivery (%) <span class="small">(iFood, Keeta)</span></label>
+<input id="deliveryFee" type="number" step="0.01"/>
+
+<label>Taxa da maquininha - Débito (%)</label>
+<input id="cardDebitFee" type="number" step="0.01"/>
+
+<label>Taxa da maquininha - Crédito (%)</label>
+<input id="cardCreditFee" type="number" step="0.01"/>
+
+<label>Taxa fixa por pedido (R$)</label>
+<input id="fixedFee" type="number" step="0.01"/>
+
+<br/><br/>
+
+<button onclick="calculateAdvanced()">Analisar meu produto</button>
+
+<div id="advancedResults" class="result">
+
+<div class="block">
+<strong>📊 Resumo Financeiro</strong>
+<div id="advIngredientCost"></div>
+<div id="advPackagingCost"></div>
+<div id="advFeesValue"></div>
+<div id="advTotalCost"></div>
+</div>
+
+<div class="block">
+<strong>📈 Indicadores</strong>
+<div id="advProfit"></div>
+<div id="advMargin"></div>
+<div id="advMarkup"></div>
+<div id="advCMV"></div>
+<div id="advSuggestedApp"></div>
+<div id="advAlert"></div>
+</div>
+
+</div>
+</div>
+
 </div>
 
 <script>
-function roundPsychological(value) {
-  const endings = [4.9, 6.9, 9.9];
-  const base = Math.floor(value / 10) * 10;
-
-  let candidates = [];
-
-  for (let offset = -10; offset <= 10; offset += 10) {
-    endings.forEach(e => {
-      candidates.push(base + offset + e);
-    });
-  }
-
-  let closest = candidates[0];
-
-  candidates.forEach(c => {
-    if (c > 0 && Math.abs(c - value) < Math.abs(closest - value)) {
-      closest = c;
-    }
-  });
-
-  return Number(closest.toFixed(2));
+function showTab(tab){
+ document.getElementById("basicTab").style.display=tab==="basic"?"block":"none";
+ document.getElementById("advancedTab").style.display=tab==="advanced"?"block":"none";
 }
 
-function calculate() {
-  const cost = parseFloat(document.getElementById("cost").value);
-  const tax = parseFloat(document.getElementById("plan").value);
+function roundPsych(val){
+ const endings=[0.9,4.9,6.9,9.9];
+ let best=val, diff=999;
+ endings.forEach(e=>{
+   const base=Math.floor(val/10)*10+e;
+   if(Math.abs(base-val)<diff){diff=Math.abs(base-val);best=base;}
+ });
+ return best;
+}
 
-  if (!cost || cost <= 0) {
-    alert("Informe um custo válido.");
-    return;
-  }
+function calculateBasic(){
+ const cost=parseFloat(document.getElementById("basicCost").value)||0;
+ const appFee=(parseFloat(document.getElementById("basicAppFee").value)||0)/100;
 
-  const rawStore = cost * 2.5;
-  const storePrice = roundPsychological(rawStore);
-  const storeProfit = storePrice - cost;
-  const storeMarkup = storePrice / cost;
-  const storeCMV = (cost / storePrice) * 100;
+ const storePrice=roundPsych(cost*2.5);
+ const storeProfit=storePrice-cost;
+ const storeMarkup=(storePrice/cost);
+ const storeCMV=(cost/storePrice)*100;
 
-  const rawIfood = storePrice / (1 - tax);
-  const ifoodPrice = roundPsychological(rawIfood);
-  const ifoodProfit = (ifoodPrice * (1 - tax)) - cost;
-  const ifoodMarkup = ifoodPrice / cost;
-  const ifoodCMV = (cost / ifoodPrice) * 100;
+ const deliveryPrice=roundPsych((storeProfit+cost)/(1-appFee));
+ const deliveryProfit=deliveryPrice*(1-appFee)-cost;
+ const deliveryMarkup=(deliveryPrice/cost);
+ const deliveryCMV=(cost/deliveryPrice)*100;
 
-  document.getElementById("storePrice").innerText =
-    "R$ " + storePrice.toFixed(2);
+ document.getElementById("basicStorePrice").innerText="Preço balcão: R$ "+storePrice.toFixed(2);
+ document.getElementById("basicStoreMarkup").innerText="Markup: "+storeMarkup.toFixed(2)+"x";
+ document.getElementById("basicStoreCMV").innerText="CMV: "+storeCMV.toFixed(1)+"%";
+ document.getElementById("basicStoreProfit").innerText="Lucro: R$ "+storeProfit.toFixed(2);
 
-  document.getElementById("storeMarkup").innerText =
-    "• Markup: " + storeMarkup.toFixed(2) + "x";
+ document.getElementById("basicDeliveryPrice").innerText="Preço apps: R$ "+deliveryPrice.toFixed(2);
+ document.getElementById("basicDeliveryMarkup").innerText="Markup: "+deliveryMarkup.toFixed(2)+"x";
+ document.getElementById("basicDeliveryCMV").innerText="CMV: "+deliveryCMV.toFixed(1)+"%";
+ document.getElementById("basicDeliveryProfit").innerText="Lucro: R$ "+deliveryProfit.toFixed(2);
 
-  document.getElementById("storeCMV").innerText =
-    "• CMV: " + storeCMV.toFixed(1) + "%";
+ document.getElementById("basicResults").style.display="block";
+}
 
-  document.getElementById("storeProfit").innerText =
-    "• Lucro: R$ " + storeProfit.toFixed(2);
+function addIngredient(){
+ const div=document.createElement("div");
+ div.className="row";
+ div.innerHTML='<input placeholder="Nome do insumo"/><input type="number" step="0.01" placeholder="Custo"/>';
+ document.getElementById("ingredients").appendChild(div);
+}
 
-  document.getElementById("ifoodPrice").innerText =
-    "R$ " + ifoodPrice.toFixed(2);
+function addPackage(){
+ const div=document.createElement("div");
+ div.className="row3";
+ div.innerHTML='<input placeholder="Nome da embalagem"/><input type="number" step="1" placeholder="Qtd usada"/><input type="number" step="0.01" placeholder="Valor unitário"/>';
+ document.getElementById("packages").appendChild(div);
+}
 
-  document.getElementById("ifoodMarkup").innerText =
-    "• Markup: " + ifoodMarkup.toFixed(2) + "x";
+function calculateAdvanced(){
+ const price=parseFloat(document.getElementById("advPrice").value)||0;
+ const deliveryFee=parseFloat(document.getElementById("deliveryFee").value)||0;
+ const cardDebitFee=parseFloat(document.getElementById("cardDebitFee").value)||0;
+ const cardCreditFee=parseFloat(document.getElementById("cardCreditFee").value)||0;
+ const fixedFee=parseFloat(document.getElementById("fixedFee").value)||0;
 
-  document.getElementById("ifoodCMV").innerText =
-    "• CMV: " + ifoodCMV.toFixed(1) + "%";
+ let ingredientTotal=0;
+ document.querySelectorAll("#ingredients .row").forEach(r=>{
+   ingredientTotal+=parseFloat(r.children[1].value)||0;
+ });
 
-  document.getElementById("ifoodProfit").innerText =
-    "• Lucro: R$ " + ifoodProfit.toFixed(2);
+ let packagingTotal=0;
+ document.querySelectorAll("#packages .row3").forEach(r=>{
+   const q=parseFloat(r.children[1].value)||0;
+   const v=parseFloat(r.children[2].value)||0;
+   packagingTotal+=q*v;
+ });
 
-  document.getElementById("ifoodTax").innerText =
-    "• Taxa iFood considerada: " + (tax * 100).toFixed(0) + "%";
+ const debitFeeValue = price*(cardDebitFee/100);
+ const creditFeeValue = price*(cardCreditFee/100);
 
-  document.getElementById("results").style.display = "block";
+ const totalCostDebit = ingredientTotal + packagingTotal + debitFeeValue + fixedFee;
+ const totalCostCredit = ingredientTotal + packagingTotal + creditFeeValue + fixedFee;
+
+ const profitDebit = price - totalCostDebit;
+ const profitCredit = price - totalCostCredit;
+
+ const targetProfit = profitDebit;
+ const suggestedAppPrice = targetProfit > 0 && deliveryFee > 0
+   ? targetProfit / (1 - deliveryFee/100) + ingredientTotal + packagingTotal + debitFeeValue + fixedFee
+   : 0;
+
+ const margin = price>0 ? (profitDebit/price)*100 : 0;
+ const markup = totalCostDebit>0 ? price/totalCostDebit : 0;
+ const cmv = price>0 ? (totalCostDebit/price)*100 : 0;
+
+ document.getElementById("advIngredientCost").innerText="Custo dos insumos: R$ "+ingredientTotal.toFixed(2);
+ document.getElementById("advPackagingCost").innerText="Embalagem: R$ "+packagingTotal.toFixed(2);
+ document.getElementById("advFeesValue").innerText="Taxas da maquininha + fixa: R$ "+(debitFeeValue + fixedFee).toFixed(2);
+ document.getElementById("advTotalCost").innerText="Custo total (débito): R$ "+totalCostDebit.toFixed(2)+" | Crédito: R$ "+totalCostCredit.toFixed(2);
+
+ document.getElementById("advProfit").innerText="Lucro no débito: R$ "+profitDebit.toFixed(2)+" | Lucro no crédito: R$ "+profitCredit.toFixed(2);
+ document.getElementById("advMargin").innerText="Margem: "+margin.toFixed(1)+"%";
+ document.getElementById("advMarkup").innerText="Markup real: "+markup.toFixed(2)+"x";
+ document.getElementById("advCMV").innerText="CMV real: "+cmv.toFixed(1)+"%";
+
+ document.getElementById("advSuggestedApp").innerText =
+  suggestedAppPrice>0 ? "Preço sugerido no iFood para manter o lucro: R$ "+suggestedAppPrice.toFixed(2) : "";
+
+ const alertBox=document.getElementById("advAlert");
+ if(margin<20){
+  alertBox.innerText="⚠ Margem perigosa — esse produto pode estar comprometendo seu caixa.";
+  alertBox.style.color="red";
+ }else if(margin<30){
+  alertBox.innerText="🟡 Margem apertada — cuidado com promoções.";
+  alertBox.style.color="orange";
+ }else{
+  alertBox.innerText="🟢 Margem saudável.";
+  alertBox.style.color="green";
+ }
+
+ document.getElementById("advancedResults").style.display="block";
 }
 </script>
 
